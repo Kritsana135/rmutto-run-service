@@ -1,38 +1,52 @@
-import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
-import { User } from '../../../entity/User';
-import { CustomContext } from '../../../global/interface';
-import { isAuth } from '../../middleware/authMiddleware';
-import { GraphQLUpload } from 'graphql-upload';
-import { Upload } from '../types/UserType';
-import { v4 } from 'uuid';
-import { createWriteStream } from 'fs';
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
+import { User } from "../../../entity/User";
+import { CustomContext, Upload } from "../../../global/interface";
+import { isAuth } from "../../middleware/authMiddleware";
+import { GraphQLUpload } from "graphql-upload";
+import { UpdateProfileInput } from "../types/UserType";
+import { storeDirectory } from "../../../config/uploadConfig";
+import { createUploadUrl } from "../../../utils/upload";
 
 @Resolver()
 export class UserResolver {
-    @Query(() => User , {nullable:true})
-    @UseMiddleware(isAuth)
-    async me (@Ctx() {payload}: CustomContext):Promise<User | undefined> {
-        return await User.findOne({id: payload?.userId})
-    }
+  @Query(() => User, { nullable: true })
+  @UseMiddleware(isAuth)
+  async me(@Ctx() { payload }: CustomContext): Promise<User | undefined> {
+    return await User.findOne({ id: payload?.userId });
+  }
 
-    @Mutation(() => Boolean)
-    async addProfilePicture(@Arg("picture", () => GraphQLUpload)
-    {
+  @Mutation(() => User, { nullable: true })
+  @UseMiddleware(isAuth)
+  async updateMe(
+    @Arg("input") input: UpdateProfileInput,
+    @Ctx() { payload }: CustomContext
+  ): Promise<User | undefined> {
+    const user = await User.findOne({ id: payload?.userId });
+    if (!user) {
+      return undefined;
+    }
+    return user.save({ data: { ...user, ...input } });
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async addProfilePicture(
+    @Ctx() { payload }: CustomContext,
+    @Arg("picture", () => GraphQLUpload)
+    { createReadStream, mimetype }: Upload
+  ): Promise<boolean> {
+    return !(await createUploadUrl({
+      userId: payload?.userId!,
       createReadStream,
-      filename
-    }: Upload): Promise<boolean> {
-      const token = v4();
-      console.log(token,createReadStream,filename)
-      // return true
-      return new Promise(async (resolve, reject) =>
-            createReadStream()
-                .pipe(createWriteStream(__dirname + `/../../../../images/profile/${filename}`))
-                .on("finish", () => resolve(true))
-                .on("error", (err) => {
-                  console.log(err)
-                  reject(false);
-                })
-        );
-    }
-
+      mimetype,
+      directory: storeDirectory.profile,
+    }));
+  }
 }

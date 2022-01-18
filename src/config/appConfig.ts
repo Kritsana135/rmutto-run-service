@@ -13,9 +13,9 @@ export const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 export const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 
 export const ExpireTime = {
-    verifyEmail : 60 * 60 * 24, // 1 day
-    resetEmail : 60 * 60 * 24, // 1 day
-}
+  verifyEmail: 60 * 60 * 24, // 1 day
+  resetEmail: 60 * 60 * 24, // 1 day
+};
 
 // email
 export const EmailConfig = {

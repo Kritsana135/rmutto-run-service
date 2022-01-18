@@ -1,16 +1,24 @@
-import {BaseEntity, Column, CreateDateColumn, UpdateDateColumn} from "typeorm";
-import {ObjectType} from "type-graphql";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { Field, ObjectType } from "type-graphql";
 
 @ObjectType()
-export class BaseAppEntity extends BaseEntity{
+export class BaseAppEntity extends BaseEntity {
+  @Field()
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-    @CreateDateColumn()
-    created_at: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-    @Column({ default: null })
-    deleted_at: Date ;
-
+  @Column({ default: null })
+  deletedAt: Date;
 }

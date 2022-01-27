@@ -19,7 +19,11 @@ import { AuthMessage2, ErrorHandle } from "../../../global/error";
 import dayjs from "dayjs";
 import { performNewHashData, redis } from "../../../utils/redis";
 import { User } from "../../../entity/User";
-import { LeaderBoard, LeaderBoardRes } from "../types/ProgressType";
+import {
+  LeaderBoard,
+  LeaderBoardRes,
+  MyProgressRes,
+} from "../types/ProgressType";
 
 @Resolver()
 export class ProgressResolver {
@@ -56,18 +60,22 @@ export class ProgressResolver {
     };
   }
 
-  @Query(() => Number)
+  @Query(() => MyProgressRes)
   @UseMiddleware(isAuth)
-  async myRank(@Ctx() { payload }: CustomContext): Promise<number> {
+  async myProgress(@Ctx() { payload }: CustomContext): Promise<MyProgressRes> {
     const user = await checkUser(payload?.userId!);
     let rank = await redis.zrevrank("leaderboard_set", user.id);
-    console.log("@Rank", rank);
+    let km = await redis.hmget(user.id, ["name", "km"]);
+    console.log("km", km);
     if (rank === null) {
       await performNewLeaderBoard();
       rank = await redis.zrevrank("leaderboard_set", user.id);
-      return rank === null ? -1 : rank + 1;
+      return {
+        no: rank === null ? -1 : rank + 1,
+        km: parseFloat(km[1] || "0"),
+      };
     }
-    return rank + 1;
+    return { no: rank + 1, km: parseFloat(km[1] || "0") };
   }
 
   @Query(() => LeaderBoardRes)

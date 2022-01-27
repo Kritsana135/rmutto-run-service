@@ -1,35 +1,32 @@
-import { Field, InputType, ObjectType } from "type-graphql";
 import { IsEmail, Length } from "class-validator";
+import { Field, InputType, ObjectType } from "type-graphql";
 import { User } from "../../../entity/User";
-import { IsEmailAlreadyExist } from "./UserDecorator";
-import { AuthMessage } from "../../../global/error";
 import BaseResponse from "../../../global/types";
 
 @InputType()
 export class SignupInput {
   @Field()
-  @IsEmail()
-  @IsEmailAlreadyExist({ message: AuthMessage.ALREADY_EMAIL })
-  email: string;
-
-  @Field()
-  @Length(8, 50)
-  password: string;
-
-  @Field()
-  @Length(2, 50)
+  @Length(2, 30)
   firstName: string;
 
   @Field()
-  @Length(2, 50)
+  @Length(2, 30)
   lastName: string;
+
+  @Field()
+  address: string;
 
   @Field()
   @Length(9, 15)
   phoneNumber: string;
 
   @Field()
-  address: string;
+  @IsEmail()
+  email: string;
+
+  @Field()
+  @Length(8, 30)
+  password: string;
 }
 
 export const CreateUserRes = BaseResponse(User);
@@ -50,6 +47,9 @@ export class LoginInput {
 export class Token {
   @Field({ nullable: true })
   accessToken?: string;
+
+  @Field()
+  userId?: string;
 }
 
 export const LoginRes = BaseResponse(Token);

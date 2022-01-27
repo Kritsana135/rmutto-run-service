@@ -1,5 +1,5 @@
-import { ClassType, Field, InputType, Int, ObjectType } from "type-graphql";
 import { Max, Min } from "class-validator";
+import { ClassType, Field, InputType, Int, ObjectType } from "type-graphql";
 
 export default function BaseResponse<TPayload>(
   TPayloadClass: ClassType<TPayload>

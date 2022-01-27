@@ -27,3 +27,12 @@ export interface IPerformNewHashData {
   id: string;
   km: string;
 }
+
+@ObjectType()
+export class MyProgressRes {
+  @Field()
+  km: number;
+
+  @Field(() => Int)
+  no: number;
+}

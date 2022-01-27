@@ -17,7 +17,7 @@ export const AuthMessage2 = {
   },
   USER_NOT_FOUND: {
     key: "USER_NOT_FOUND",
-    message: "could not find user",
+    message: "ไม่พบผู้ใช้งานในระบบ",
   },
   NOT_AUTH: {
     key: "NOT_AUTH",
@@ -25,15 +25,27 @@ export const AuthMessage2 = {
   },
   USER_NOT_VERIFY: {
     key: "USER_NOT_VERIFY",
-    message: "this user not verify",
+    message: "ผู้ใช้ยังไม่ได้ทำการยืนยันอีเมล",
   },
   INVALID_PASSWORD: {
     key: "INVALID_PASSWORD",
-    message: "password is invalid",
+    message: "รหัสผ่านไม่ถูกต้อง",
   },
   UPLOAD_FAIL: {
     key: "UPLOAD_FAIL",
     message: "upload image fail!",
+  },
+  ALREADY_EMAIL: {
+    key: "ALREADY_EMAIL",
+    message: "this email has been signup",
+  },
+  CREATE_USER_FAIL: {
+    key: "CREATE_USER_FAIL",
+    message: "created user fail!",
+  },
+  VERIFY_URL_EXPIRED: {
+    key: "VERIFY_URL_EXPIRED",
+    message: "Url สำหรับการยืนยันอีเมลล์หมดอายุ",
   },
 };
 

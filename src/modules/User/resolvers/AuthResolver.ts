@@ -1,3 +1,4 @@
+import { compare, hash } from "bcryptjs";
 import {
   Arg,
   Ctx,
@@ -6,18 +7,11 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import {
-  CreateUserRes,
-  LoginInput,
-  LoginRes,
-  ResetPassEmailInput,
-  ResetPassInput,
-  SignupInput,
-} from "../types/AuthType";
-import { compare, hash } from "bcryptjs";
+import { getManager } from "typeorm";
 import { User } from "../../../entity/User";
-import { CustomContext } from "../../../global/interface";
 import { AuthMessage, AuthMessage2, ErrorHandle } from "../../../global/error";
+import { CustomContext } from "../../../global/interface";
+import { ResponseClass } from "../../../global/types";
 import {
   createAccessToken,
   createRefreshToken,
@@ -32,8 +26,14 @@ import {
   sendEmail,
 } from "../../../utils/sendEmail";
 import { isAuth } from "../../middleware/authMiddleware";
-import { ResponseClass } from "../../../global/types";
-import { getManager } from "typeorm";
+import {
+  CreateUserRes,
+  LoginInput,
+  LoginRes,
+  ResetPassEmailInput,
+  ResetPassInput,
+  SignupInput,
+} from "../types/AuthType";
 
 @Resolver()
 export class AuthResolver {
@@ -46,6 +46,13 @@ export class AuthResolver {
   async signup(@Arg("input") signupInput: SignupInput): Promise<CreateUserRes> {
     const hashedPassword = await hash(signupInput.password, 12);
     try {
+      const hadEmail = await User.findOne({
+        where: { email: signupInput.email },
+      });
+      if (hadEmail) {
+        return ErrorHandle(AuthMessage2.ALREADY_EMAIL);
+      }
+
       const user = new User();
       user.password = hashedPassword;
       user.email = signupInput.email;
@@ -53,7 +60,6 @@ export class AuthResolver {
       user.lastName = signupInput.lastName;
       user.address = signupInput.address;
       user.phoneNumber = signupInput.phoneNumber;
-
       const createdUser = await getManager().save(user);
 
       await sendEmail(
@@ -69,10 +75,7 @@ export class AuthResolver {
       };
     } catch (e) {
       console.log(e);
-      return {
-        code: "FAIL",
-        message: "created user fail!",
-      };
+      return ErrorHandle(AuthMessage2.CREATE_USER_FAIL);
     }
   }
 
@@ -102,6 +105,7 @@ export class AuthResolver {
       message: "login successful!",
       payload: {
         accessToken: createAccessToken(user),
+        userId: user.id,
       },
     };
   }
@@ -135,7 +139,7 @@ export class AuthResolver {
 
   @Mutation(() => Boolean)
   async resendVerify(@Arg("email") email: string): Promise<boolean> {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email, isVerify: false });
     if (!user) {
       return false;
     }

@@ -1,12 +1,11 @@
-import { MiddlewareFn } from "type-graphql";
-import { CustomContext } from "../../global/interface";
 import { verify } from "jsonwebtoken";
-import { AuthMessage } from "../../global/error";
-import { accessTokenSecret } from "../../config/appConfig";
+import { MiddlewareFn } from "type-graphql";
+import { accessTokenSecret } from "../../../config/appConfig";
+import { AuthMessage } from "../../../global/error";
+import { CustomContext } from "../../../global/interface";
 
-export const isAuth: MiddlewareFn<CustomContext> = ({ context }, next) => {
+export const isRunner: MiddlewareFn<CustomContext> = ({ context }, next) => {
   const authorization = context.req.headers["authorization"];
-  console.log(authorization);
   if (!authorization) {
     throw new Error(AuthMessage.NOT_AUTH);
   }

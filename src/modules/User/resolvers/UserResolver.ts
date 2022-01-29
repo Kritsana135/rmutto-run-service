@@ -8,22 +8,22 @@ import {
 } from "type-graphql";
 import { User } from "../../../entity/User";
 import { CustomContext, Upload } from "../../../global/interface";
-import { isAuth } from "../../middleware/authMiddleware";
 import { GraphQLUpload } from "graphql-upload";
 import { UpdateProfileInput } from "../types/UserType";
 import { storeDirectory } from "../../../config/uploadConfig";
 import { createUploadUrl } from "../../../utils/upload";
+import { isRunner } from "../../middleware/auth/runnerAuth";
 
 @Resolver()
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isRunner)
   async me(@Ctx() { payload }: CustomContext): Promise<User | undefined> {
     return await User.findOne({ id: payload?.userId });
   }
 
   @Mutation(() => User, { nullable: true })
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isRunner)
   async updateMe(
     @Arg("input") input: UpdateProfileInput,
     @Ctx() { payload }: CustomContext
@@ -36,7 +36,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isRunner)
   async addProfilePicture(
     @Ctx() { payload }: CustomContext,
     @Arg("picture", () => GraphQLUpload)

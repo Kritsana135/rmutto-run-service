@@ -1,11 +1,11 @@
+import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
-  Column,
   CreateDateColumn,
+  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Field, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class BaseAppEntity extends BaseEntity {
@@ -19,6 +19,6 @@ export class BaseAppEntity extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({ default: null })
+  @DeleteDateColumn()
   deletedAt: Date;
 }

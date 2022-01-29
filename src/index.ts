@@ -1,7 +1,7 @@
 import "dotenv/config";
 import "reflect-metadata";
 import express from "express";
-import { corsOptions, serverPort } from "./config/appConfig";
+import { corsOptions, ENV, serverPort } from "./config/appConfig";
 import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -9,9 +9,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { refreshTokenHandler } from "./expressHandler";
 import { graphqlUploadExpress } from "graphql-upload";
+import notifier from "node-notifier";
 
 (async () => {
-  const appExpress = await express();
+  const appExpress = express();
 
   appExpress.use(cors(corsOptions));
   appExpress.use(cookieParser());
@@ -25,7 +26,7 @@ import { graphqlUploadExpress } from "graphql-upload";
 
   await createConnection();
 
-  const apolloServer = await new ApolloServer({
+  const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [__dirname + "/modules/**/**.ts"],
     }),
@@ -36,8 +37,16 @@ import { graphqlUploadExpress } from "graphql-upload";
   apolloServer.applyMiddleware({ app: appExpress, cors: false });
 
   appExpress.listen(serverPort, () => {
-    console.log(`express start at http://localhost:${serverPort}`);
+    const startMessage = `express start at http://localhost:${serverPort}`;
+    console.log(startMessage);
 
-    console.log(process.cwd());
+    if (ENV === "development") {
+      notifier.notify({ message: startMessage });
+    }
   });
-})();
+})().catch((err) => {
+  console.log(err);
+  if (ENV === "development") {
+    notifier.notify({ message: "Server Error!!!" });
+  }
+});

@@ -25,7 +25,7 @@ import {
   createResetUrl,
   sendEmail,
 } from "../../../utils/sendEmail";
-import { isAuth } from "../../middleware/authMiddleware";
+import { isRunner } from "../../middleware/auth/runnerAuth";
 import {
   CreateUserRes,
   LoginInput,
@@ -150,7 +150,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isRunner)
   async changePassword(
     @Arg("oldPassword") oldPass: string,
     @Arg("newPassword") newPass: string,

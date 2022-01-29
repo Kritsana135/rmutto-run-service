@@ -6,6 +6,10 @@ import { BaseAppEntity } from "./BaseAppEntity";
 @Entity("app")
 export class App extends BaseAppEntity {
   @Field()
+  @Column({ unique: true })
+  eventKey: string;
+
+  @Field()
   @Column({ type: "float" })
   goalKm: number;
 
@@ -19,5 +23,11 @@ export class App extends BaseAppEntity {
 
   @Field()
   @Column()
-  eventName: Date;
+  eventName: string;
+
+  @Field()
+  @Column({
+    default: false,
+  })
+  isUsed: boolean;
 }

@@ -6,7 +6,6 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { isAuth } from "../../middleware/authMiddleware";
 import { CustomContext, Upload } from "../../../global/interface";
 import { PaginationInput, ResponseClass } from "../../../global/types";
 import { getConnection } from "typeorm";
@@ -24,11 +23,12 @@ import {
   LeaderBoardRes,
   MyProgressRes,
 } from "../types/ProgressType";
+import { isRunner } from "../../middleware/auth/runnerAuth";
 
 @Resolver()
 export class ProgressResolver {
   @Mutation(() => ResponseClass)
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isRunner)
   async uploadProgress(
     @Arg("picture", () => GraphQLUpload)
     { createReadStream, mimetype }: Upload,
@@ -61,7 +61,7 @@ export class ProgressResolver {
   }
 
   @Query(() => MyProgressRes)
-  @UseMiddleware(isAuth)
+  @UseMiddleware(isRunner)
   async myProgress(@Ctx() { payload }: CustomContext): Promise<MyProgressRes> {
     const user = await checkUser(payload?.userId!);
     let rank = await redis.zrevrank("leaderboard_set", user.id);

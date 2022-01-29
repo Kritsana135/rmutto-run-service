@@ -3,6 +3,11 @@ import { BaseAppEntity } from "./BaseAppEntity";
 import { Field, Float, ObjectType } from "type-graphql";
 import { Progress } from "./Progress";
 
+export enum UserRole {
+  ADMIN = "admin",
+  RUNNER = "runner",
+}
+
 @ObjectType()
 @Entity("users")
 export class User extends BaseAppEntity {
@@ -28,6 +33,13 @@ export class User extends BaseAppEntity {
   @Field()
   @Column()
   address: string;
+
+  @Column({
+    type: "enum",
+    enum: UserRole,
+    default: UserRole.RUNNER,
+  })
+  userType: UserRole;
 
   @Field(() => Float)
   @Column({ type: "float", default: 0 })

@@ -1,6 +1,6 @@
 import Redis from "ioredis";
-import { User, UserRole } from "../entity/User";
 import { getConnection } from "typeorm";
+import { User, UserRole } from "../entity/User";
 import { IPerformNewHashData } from "../modules/Progress/types/ProgressType";
 
 export const redis = new Redis(process.env.REDIS_ENDPOINT, {

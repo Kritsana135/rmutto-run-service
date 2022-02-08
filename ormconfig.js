@@ -6,19 +6,23 @@ dotenv.config({
 
 console.log(
   process.env.TYPEORM_ENTITIES,
+  process.env.DB_HOST,
   process.env.NODE_ENV,
   process.env.NODE_ENV === "dev"
 );
 
 module.exports = {
   type: "postgres",
-  host: "localhost",
+  host: process.env.DB_HOST,
   port: 5432,
-  username: "postgres",
-  password: "20989",
-  database: "rmutto-run",
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   synchronize: true,
   logging: false,
+  extra: {
+    ssl: true,
+  },
   entities: [process.env.TYPEORM_ENTITIES],
   migrations: [process.env.TYPEORM_MIGRATION],
 };

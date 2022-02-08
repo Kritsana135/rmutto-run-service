@@ -26,7 +26,7 @@ import { refreshTokenHandler } from "./expressHandler";
   appExpress.get("/", (_, res) => res.send("hello"));
   appExpress.post("/refresh_token", refreshTokenHandler);
 
-  await createConnection();
+  await createConnection().then(() => console.log("connect DB -----------"));
 
   const resolverPath =
     ENV === "dev"

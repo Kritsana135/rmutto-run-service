@@ -11,24 +11,24 @@ import {
 export const refreshTokenHandler = async (req: Request, res: Response) => {
   const token = req.cookies.bgm;
   if (!token) {
-    return res.send({ ok: false, accessToken: "" });
+    return res.send({ ok: false, accessToken: "", userId: "" });
   }
 
   let payload: any = null;
   try {
     payload = verify(token, refreshTokenSecret!);
   } catch (err) {
-    return res.send({ ok: false, accessToken: "" });
+    return res.send({ ok: false, accessToken: "", userId: "" });
   }
 
   const user = await User.findOne({ id: payload.userId });
 
   if (!user) {
-    return res.send({ ok: false, accessToken: "" });
+    return res.send({ ok: false, accessToken: "", userId: "" });
   }
 
   if (user.tokenVersion !== payload.tokenVersion) {
-    return res.send({ ok: false, accessToken: "" });
+    return res.send({ ok: false, accessToken: "", userId: "" });
   }
 
   sendRefreshToken(res, createRefreshToken(user));

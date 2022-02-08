@@ -10,13 +10,17 @@ export class Progress extends BaseAppEntity {
   @Column({ type: "float" })
   km: number;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ default: null, nullable: true })
   isApprove: boolean;
 
   @Field()
   @Column()
   image: string;
+
+  @Field({ nullable: true })
+  @Column({ default: null, nullable: true })
+  rejectReason: string;
 
   // relation
   @ManyToOne(() => User, (user) => user.progress)

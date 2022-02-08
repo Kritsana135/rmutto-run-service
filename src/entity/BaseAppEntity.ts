@@ -13,12 +13,13 @@ export class BaseAppEntity extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Field()
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date;
+  @DeleteDateColumn({ nullable: true })
+  deletedAt: Date | null;
 }

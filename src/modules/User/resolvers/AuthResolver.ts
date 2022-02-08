@@ -129,6 +129,7 @@ export class AuthResolver {
       km: user.km.toString(),
       displayName: `${user.firstName} ${user.lastName}`,
       id: userId,
+      bio: user.bio,
     });
     await redis.zadd("leaderboard_set", user.km, user.id);
     return {

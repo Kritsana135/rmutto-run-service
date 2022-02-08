@@ -8,4 +8,8 @@ temp/
 images/profile/*
 images/progress/*
 
+dist/
+
 .env
+.env.dev
+.env.production

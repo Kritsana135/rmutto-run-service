@@ -13,7 +13,7 @@ export const AuthMessage = {
 export const AuthMessage2 = {
   TOKEN_NOT_FOUND: {
     key: "TOKEN_NOT_FOUND",
-    message: "token not found.",
+    message: "ไม่พบโทเคน",
   },
   USER_NOT_FOUND: {
     key: "USER_NOT_FOUND",
@@ -37,7 +37,7 @@ export const AuthMessage2 = {
   },
   ALREADY_EMAIL: {
     key: "ALREADY_EMAIL",
-    message: "this email has been signup",
+    message: "อีเมลนี้มีการใช้งานไปแล้ว",
   },
   CREATE_USER_FAIL: {
     key: "CREATE_USER_FAIL",

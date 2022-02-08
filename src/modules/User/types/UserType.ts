@@ -17,4 +17,7 @@ export class UpdateProfileInput {
 
   @Field({ nullable: true })
   address: string;
+
+  @Field({ nullable: true })
+  bio: string;
 }

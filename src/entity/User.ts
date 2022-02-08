@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany } from "typeorm";
 import { BaseAppEntity } from "./BaseAppEntity";
 import { Field, Float, ObjectType } from "type-graphql";
 import { Progress } from "./Progress";
+import { Message } from "../entity/Message";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -34,6 +35,10 @@ export class User extends BaseAppEntity {
   @Column()
   address: string;
 
+  @Field()
+  @Column({ default: "" })
+  bio: string;
+
   @Column({
     type: "enum",
     enum: UserRole,
@@ -53,4 +58,10 @@ export class User extends BaseAppEntity {
 
   @OneToMany(() => Progress, (progress) => progress.user)
   progress: Progress[];
+
+  @OneToMany(() => Message, (message) => message.sender)
+  sendMessage: Message[];
+
+  @OneToMany(() => Message, (message) => message.reciver)
+  reciveMessage: Message[];
 }

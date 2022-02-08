@@ -26,7 +26,10 @@ export const createUploadUrl = async ({
     createReadStream()
       .pipe(createWriteStream(storeLocation))
       .on("finish", () => resolve(true))
-      .on("error", () => reject(false))
+      .on("error", (er) => {
+        console.log("er", er);
+        return reject(false);
+      })
   );
   if (await isSuccess) {
     return fileName;

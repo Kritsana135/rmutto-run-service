@@ -27,6 +27,6 @@ export const EmailConfig = {
   resetEmailUrl: `${webEndpoint}/user/reset`,
 };
 
-type TENV = "development" | "production";
+type TENV = "dev" | "prod";
 
-export const ENV: TENV = (process.env.NODE_ENV as TENV) || "development";
+export const ENV: TENV = (process.env.NODE_ENV as TENV) || "prd";

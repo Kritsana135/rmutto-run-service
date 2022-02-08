@@ -13,6 +13,8 @@ import { UpdateProfileInput } from "../types/UserType";
 import { storeDirectory } from "../../../config/uploadConfig";
 import { createUploadUrl } from "../../../utils/upload";
 import { isRunner } from "../../middleware/auth/runnerAuth";
+import { getConnection } from "typeorm";
+import { performNewHashData } from "../../../utils/redis";
 
 @Resolver()
 export class UserResolver {
@@ -32,7 +34,25 @@ export class UserResolver {
     if (!user) {
       return undefined;
     }
-    return user.save({ data: { ...user, ...input } });
+
+    const newData = { ...user, ...input };
+    const saved = await getConnection()
+      .createQueryBuilder()
+      .update(User)
+      .set({ ...newData })
+      .where("id =:id", { id: payload?.userId })
+      .returning("*")
+      .execute();
+
+    console.log(newData);
+    await performNewHashData({
+      km: newData.km.toString(),
+      displayName: `${newData.firstName} ${newData.lastName}`,
+      id: payload?.userId!,
+      bio: newData.bio,
+    });
+
+    return saved.raw[0];
   }
 
   @Mutation(() => Boolean)
@@ -40,13 +60,15 @@ export class UserResolver {
   async addProfilePicture(
     @Ctx() { payload }: CustomContext,
     @Arg("picture", () => GraphQLUpload)
-    { createReadStream, mimetype }: Upload
+    { createReadStream }: Upload
   ): Promise<boolean> {
-    return !(await createUploadUrl({
+    const state = await createUploadUrl({
       userId: payload?.userId!,
       createReadStream,
-      mimetype,
+      mimetype: "image/png",
       directory: storeDirectory.profile,
-    }));
+    });
+    console.log("state", state);
+    return state !== null;
   }
 }

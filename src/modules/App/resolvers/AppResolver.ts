@@ -10,8 +10,9 @@ export class AppResolver {
   @UseMiddleware(isAdmin)
   async saveApp(@Arg("input") input: AppInput): Promise<App> {
     const findApp = await App.findOne({
-      where: { eventKey: input.eventKey, deletedAt: null },
+      where: { eventKey: input.eventKey },
     });
+
     if (findApp) {
       const saved = await getConnection()
         .createQueryBuilder()

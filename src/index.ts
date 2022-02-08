@@ -1,21 +1,23 @@
-import "dotenv/config";
-import "reflect-metadata";
-import express from "express";
-import { corsOptions, ENV, serverPort } from "./config/appConfig";
-import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
-import { buildSchema } from "type-graphql";
-import cors from "cors";
 import cookieParser from "cookie-parser";
-import { refreshTokenHandler } from "./expressHandler";
+import cors from "cors";
+import "dotenv/config";
+import express from "express";
 import { graphqlUploadExpress } from "graphql-upload";
 import notifier from "node-notifier";
+import "reflect-metadata";
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
+import { corsOptions, ENV, serverPort } from "./config/appConfig";
+import { refreshTokenHandler } from "./expressHandler";
 
 (async () => {
   const appExpress = express();
 
   appExpress.use(cors(corsOptions));
   appExpress.use(cookieParser());
+  appExpress.use("/profile", express.static("images/profile"));
+  appExpress.use("/progress", express.static("images/progress"));
   appExpress.use(
     "/graphql",
     graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 })
@@ -26,9 +28,13 @@ import notifier from "node-notifier";
 
   await createConnection();
 
+  const resolverPath =
+    ENV === "dev"
+      ? __dirname + "/modules/**/**.ts"
+      : __dirname + "/modules/**/**.js";
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [__dirname + "/modules/**/**.ts"],
+      resolvers: [resolverPath],
     }),
     context: ({ req, res }) => ({ req, res }),
   });
@@ -40,13 +46,13 @@ import notifier from "node-notifier";
     const startMessage = `express start at http://localhost:${serverPort}`;
     console.log(startMessage);
 
-    if (ENV === "development") {
+    if (ENV === "dev") {
       notifier.notify({ message: startMessage });
     }
   });
 })().catch((err) => {
   console.log(err);
-  if (ENV === "development") {
+  if (ENV === "dev") {
     notifier.notify({ message: "Server Error!!!" });
   }
 });

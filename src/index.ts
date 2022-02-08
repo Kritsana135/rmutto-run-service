@@ -6,12 +6,19 @@ import express from "express";
 import { graphqlUploadExpress } from "graphql-upload";
 import notifier from "node-notifier";
 import "reflect-metadata";
+const dotenv = require("dotenv");
+
+dotenv.config({
+  path: process.env.NODE_ENV == "dev" ? ".env.dev" : ".env.production",
+});
+
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { corsOptions, ENV, serverPort } from "./config/appConfig";
 import { refreshTokenHandler } from "./expressHandler";
 
 (async () => {
+  console.log(process.env.SERVER_PORT);
   const appExpress = express();
 
   appExpress.use(cors(corsOptions));

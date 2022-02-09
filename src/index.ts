@@ -18,7 +18,6 @@ import { corsOptions, ENV, serverPort } from "./config/appConfig";
 import { refreshTokenHandler } from "./expressHandler";
 
 (async () => {
-  console.log(process.env.SERVER_PORT);
   const appExpress = express();
 
   appExpress.use(cors(corsOptions));
@@ -33,7 +32,7 @@ import { refreshTokenHandler } from "./expressHandler";
   appExpress.get("/", (_, res) => res.send("hello"));
   appExpress.post("/refresh_token", refreshTokenHandler);
 
-  await createConnection().then(() => console.log("connect DB -----------"));
+  await createConnection().then(() => console.log("connected DB  👌"));
 
   const resolverPath =
     ENV === "dev"

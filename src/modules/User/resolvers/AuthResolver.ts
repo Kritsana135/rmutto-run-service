@@ -175,18 +175,18 @@ export class AuthResolver {
     return true;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async sendResetPassEmail(
     @Arg("input") input: ResetPassEmailInput
-  ): Promise<Boolean> {
+  ): Promise<string> {
     const user = await User.findOne({ email: input.email });
     if (!user) {
-      return false;
+      throw new Error("not found this email in app");
     }
     await sendEmail(
       createResetPassEmail(input.email, await createResetUrl(user.id))
     );
-    return true;
+    return "send recovery email success";
   }
 
   @Mutation(() => Boolean)

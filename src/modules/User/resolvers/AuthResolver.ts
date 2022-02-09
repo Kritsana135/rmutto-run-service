@@ -183,9 +183,7 @@ export class AuthResolver {
     if (!user) {
       throw new Error("not found this email in app");
     }
-    await sendEmail(
-      createResetPassEmail(input.email, await createResetUrl(user.id))
-    );
+    sendEmail(createResetPassEmail(input.email, await createResetUrl(user.id)));
     return "send recovery email success";
   }
 

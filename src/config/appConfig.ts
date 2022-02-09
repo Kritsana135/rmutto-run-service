@@ -24,7 +24,7 @@ export const EmailConfig = {
   pass: process.env.EMAIL_PASS,
   senderEmail: '"RMUTTO RUN Service 🏃" ',
   verifyEmailUrl: `${webEndpoint}/user/verify`,
-  resetEmailUrl: `${webEndpoint}/user/reset`,
+  resetEmailUrl: `${webEndpoint}/reset`,
 };
 
 type TENV = "dev" | "prod";

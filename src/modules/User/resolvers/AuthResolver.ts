@@ -189,20 +189,20 @@ export class AuthResolver {
     return "send recovery email success";
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async resetPass(
     @Arg("input") { newPass, token }: ResetPassInput
-  ): Promise<boolean> {
+  ): Promise<string> {
     const userId = await redis.get(token);
 
     if (!userId) {
-      return false;
+      throw new Error("Recovery Password token time out!!");
     }
 
     const hashedPassword = await hash(newPass, 12);
     await User.update({ id: userId }, { password: hashedPassword });
     await redis.del(token);
 
-    return true;
+    return "Channge Password successfull";
   }
 }

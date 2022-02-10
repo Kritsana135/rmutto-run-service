@@ -15,7 +15,7 @@ dotenv.config({
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { corsOptions, ENV, serverPort } from "./config/appConfig";
-import { refreshTokenHandler } from "./expressHandler";
+import { refreshTokenHandler, deleteTokenHandler } from "./expressHandler";
 
 (async () => {
   const appExpress = express();
@@ -31,6 +31,7 @@ import { refreshTokenHandler } from "./expressHandler";
 
   appExpress.get("/", (_, res) => res.send("hello"));
   appExpress.post("/refresh_token", refreshTokenHandler);
+  appExpress.post("/sign_out", deleteTokenHandler);
 
   await createConnection().then(() => console.log("connected DB  👌"));
 

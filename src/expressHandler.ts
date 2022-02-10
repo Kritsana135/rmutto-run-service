@@ -39,3 +39,7 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
     userId: user.id,
   });
 };
+
+export const deleteTokenHandler = async (_: Request, res: Response) => {
+  res.clearCookie("bgm", { path: "/refresh_token" }).end();
+};

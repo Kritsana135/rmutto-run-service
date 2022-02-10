@@ -62,7 +62,7 @@ export class AuthResolver {
       user.phoneNumber = signupInput.phoneNumber;
       const createdUser = await getManager().save(user);
 
-      await sendEmail(
+      sendEmail(
         createConfirmEmail(
           signupInput.email,
           await createConfirmationUrl(createdUser.id)
@@ -144,19 +144,17 @@ export class AuthResolver {
     if (!user) {
       return false;
     }
-    await sendEmail(
-      createConfirmEmail(email, await createConfirmationUrl(user.id))
-    );
+    sendEmail(createConfirmEmail(email, await createConfirmationUrl(user.id)));
     return true;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   @UseMiddleware(isRunner)
   async changePassword(
     @Arg("oldPassword") oldPass: string,
     @Arg("newPassword") newPass: string,
     @Ctx() { payload }: CustomContext
-  ): Promise<Boolean> {
+  ): Promise<string> {
     const user = await User.findOne({ id: payload?.userId });
     if (!user) {
       throw new Error(AuthMessage.USER_NOT_FOUND);
@@ -172,7 +170,7 @@ export class AuthResolver {
     }
     const hashedPassword = await hash(newPass, 12);
     await User.update({ id: payload?.userId }, { password: hashedPassword });
-    return true;
+    return "change password successfull";
   }
 
   @Mutation(() => String)

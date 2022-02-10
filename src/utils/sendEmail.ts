@@ -25,12 +25,19 @@ export async function sendEmail(mail: Mail.Options) {
 export const createConfirmEmail = (
   receiverEmail: string,
   confirmUrl: string
-): Mail.Options => ({
-  from: EmailConfig.senderEmail, // sender address
-  to: receiverEmail, // list of receivers
-  subject: "RMUTTO RUN Email Verify", // Subject line
-  html: `<a href='${confirmUrl}'>${confirmUrl}</a>`, // html body
-});
+): Mail.Options => {
+  const file = fs.readFileSync("src/email/confirmEmail.html");
+  const html = file
+    .toString()
+    .replace("{{%CONFIRM_URL%}}", confirmUrl)
+    .replace("{{%CLIENT_URL%}}", process.env.WEB_ENDPOINT!);
+  return {
+    from: EmailConfig.senderEmail, // sender address
+    to: receiverEmail, // list of receivers
+    subject: "RMUTTO RUN Email Verify", // Subject line
+    html,
+  };
+};
 
 export const createResetPassEmail = (
   receiverEmail: string,

@@ -62,6 +62,7 @@ export class UserResolver {
     @Arg("picture", () => GraphQLUpload)
     { createReadStream }: Upload
   ): Promise<boolean> {
+    console.log("--** addProfilePicture **--")
     const state = await createUploadUrl({
       userId: payload?.userId!,
       createReadStream,

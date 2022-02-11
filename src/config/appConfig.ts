@@ -2,12 +2,13 @@ import { CorsOptions } from "cors";
 
 export const serverPort = process.env.SERVER_PORT || 4000;
 
-const studioGraphqlEndpoint =
-  process.env.STUDIO_APOLLO || "https://studio.apollographql.com";
+// const studioGraphqlEndpoint =
+//   process.env.STUDIO_APOLLO || "https://studio.apollographql.com";
 const webEndpoint = process.env.WEB_ENDPOINT || "http://localhost:3000";
-const adminEndpoint = process.env.ADMIN_ENDPOINT || "http://localhost:3000";
+// const adminEndpoint = process.env.ADMIN_ENDPOINT || "http://localhost:3000";
 export const corsOptions: CorsOptions = {
-  origin: [studioGraphqlEndpoint, webEndpoint, adminEndpoint, "*"],
+  // origin: [studioGraphqlEndpoint, webEndpoint, adminEndpoint, "*"],
+  origin: "*",
   credentials: true,
 };
 

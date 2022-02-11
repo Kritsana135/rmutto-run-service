@@ -7,7 +7,7 @@ const studioGraphqlEndpoint =
 const webEndpoint = process.env.WEB_ENDPOINT || "http://localhost:3000";
 const adminEndpoint = process.env.ADMIN_ENDPOINT || "http://localhost:3000";
 export const corsOptions: CorsOptions = {
-  origin: [studioGraphqlEndpoint, webEndpoint, adminEndpoint],
+  origin: [studioGraphqlEndpoint, webEndpoint, adminEndpoint, "*"],
   credentials: true,
 };
 

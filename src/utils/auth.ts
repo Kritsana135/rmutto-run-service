@@ -1,9 +1,8 @@
-import { sign } from "jsonwebtoken";
-import { User } from "../entity/User";
-import { accessTokenSecret, refreshTokenSecret } from "../config/appConfig";
 import { Response } from "express";
+import { sign } from "jsonwebtoken";
+import { accessTokenSecret, refreshTokenSecret } from "../config/appConfig";
+import { User } from "../entity/User";
 import { AuthMessage } from "../global/error";
-import dayjs from "dayjs";
 
 export const createAccessToken = (user: User) => {
   return sign({ userId: user.id }, accessTokenSecret!, {
@@ -25,7 +24,6 @@ export const sendRefreshToken = (res: Response, token: string) => {
   res.cookie("bgm", token, {
     httpOnly: true,
     path: "/refresh_token",
-    expires: dayjs().add(7, "day").toDate(),
   });
 };
 

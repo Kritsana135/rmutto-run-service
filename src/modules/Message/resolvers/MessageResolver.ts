@@ -123,7 +123,6 @@ export class MessageResolver {
     let response: InBox[] = [];
     allUserExceptMe.map((otherUser) => {
       const lastMessage = allUserMessage.find((m) => {
-        console.log(m);
         return m.sender.id === otherUser.id || m.reciver.id === otherUser.id;
       });
       response.push({
@@ -133,9 +132,10 @@ export class MessageResolver {
     });
     response = response.sort(
       (a, b) =>
-        new Date(a.lastMessage?.createdAt || "1/1/1999").getTime() -
-        new Date(b.lastMessage?.createdAt || "1/1/1999").getTime()
+        new Date(b.lastMessage?.createdAt || "1/1/1999").getTime() -
+        new Date(a.lastMessage?.createdAt || "1/1/1998").getTime()
     );
+    console.log(response);
     return response;
   }
 

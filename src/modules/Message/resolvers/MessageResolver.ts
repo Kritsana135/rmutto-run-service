@@ -72,7 +72,9 @@ export class MessageResolver {
     if (myType.userType === UserRole.ADMIN) {
       userList = await getRepository(User)
         .createQueryBuilder("user")
-        .where("user.firstName like :name", { name: `%${name || ""}%` })
+        .where("LOWER(user.firstName) like LOWER(:name)", {
+          name: `%${name || ""}%`,
+        })
         .andWhere("user.userType =:type", { type: UserRole.RUNNER })
         .limit(10)
         .getMany();
@@ -92,16 +94,33 @@ export class MessageResolver {
   async inbox(@Ctx() { payload }: CustomContext): Promise<InBox[]> {
     const myId = payload?.userId!;
 
-    const allUserExceptMe = await User.find({ where: { id: Not(myId) } });
+    const myType = await User.findOne({
+      select: ["userType"],
+      where: { id: myId },
+    });
+    if (!myType) {
+      throw new Error("not found user!");
+    }
+    let allUserExceptMe;
+    if (myType.userType === UserRole.ADMIN) {
+      allUserExceptMe = await User.find({
+        where: { id: Not(myId), isVerify: true },
+      });
+    } else {
+      allUserExceptMe = await User.find({
+        where: { id: Not(myId), userType: UserRole.ADMIN, isVerify: true },
+      });
+    }
+
     const allUserMessage = await Message.find({
       relations: ["sender", "reciver"],
       where: [{ sender: myId }, { reciver: myId }],
       order: {
-        createdAt: "DESC",
+        createdAt: "ASC",
       },
     });
 
-    const response: InBox[] = [];
+    let response: InBox[] = [];
     allUserExceptMe.map((otherUser) => {
       const lastMessage = allUserMessage.find((m) => {
         console.log(m);
@@ -112,6 +131,11 @@ export class MessageResolver {
         lastMessage,
       });
     });
+    response = response.sort(
+      (a, b) =>
+        new Date(a.lastMessage?.createdAt || "1/1/1999").getTime() -
+        new Date(b.lastMessage?.createdAt || "1/1/1999").getTime()
+    );
     return response;
   }
 

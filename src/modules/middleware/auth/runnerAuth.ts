@@ -5,7 +5,6 @@ import { AuthMessage } from "../../../global/error";
 import { CustomContext } from "../../../global/interface";
 
 export const isRunner: MiddlewareFn<CustomContext> = ({ context }, next) => {
-  console.log("context", context);
   const authorization = context.req.headers["authorization"];
   if (!authorization) {
     throw new Error(AuthMessage.NOT_AUTH);

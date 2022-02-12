@@ -24,6 +24,8 @@ export const sendRefreshToken = (res: Response, token: string) => {
   res.cookie("bgm", token, {
     httpOnly: true,
     path: "/refresh_token",
+    sameSite: "none",
+    secure: true,
   });
 };
 

@@ -116,7 +116,7 @@ export class MessageResolver {
       relations: ["sender", "reciver"],
       where: [{ sender: myId }, { reciver: myId }],
       order: {
-        createdAt: "ASC",
+        createdAt: "DESC",
       },
     });
 

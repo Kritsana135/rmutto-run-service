@@ -6,10 +6,9 @@ import { EmailConfig, ExpireTime } from "../config/appConfig";
 import { redis } from "./redis";
 
 export async function sendEmail(mail: Mail.Options) {
+  console.log("EmailConfig", EmailConfig);
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for 465, false for other ports
+    service: "gmail",
     auth: {
       user: EmailConfig.user,
       pass: EmailConfig.pass,
